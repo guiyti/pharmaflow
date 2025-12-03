@@ -6,7 +6,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import RecipeList from './pages/RecipeList';
 import RecipeDetails from './pages/RecipeDetails';
-import { SidebarProvider, useSidebar } from './contexts/SidebarContext';
+import { SidebarProvider, useSidebar, ToastProvider } from './contexts';
 import { useMediaQuery } from './hooks';
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -71,13 +71,15 @@ const AppRoutes: React.FC = () => {
 const App: React.FC = () => {
   return (
     <HashRouter>
-      <SidebarProvider>
-        <Routes>
-          {/* We separate the Login route at the top level to avoid wrapping it in Layout */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/*" element={<AppRoutes />} />
-        </Routes>
-      </SidebarProvider>
+      <ToastProvider>
+        <SidebarProvider>
+          <Routes>
+            {/* We separate the Login route at the top level to avoid wrapping it in Layout */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/*" element={<AppRoutes />} />
+          </Routes>
+        </SidebarProvider>
+      </ToastProvider>
     </HashRouter>
   );
 };

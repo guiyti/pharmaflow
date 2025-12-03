@@ -1,10 +1,15 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Pill, ShoppingBag, UserCog, FileBarChart, ArrowUpRight, Package, TrendingUp, Users } from 'lucide-react';
 import { MOCK_RECIPES } from '../constants';
 import { Link } from 'react-router-dom';
-import { StatCard, ActionButton, StatusBadge } from '../components/ui';
+import { StatCard, ActionButton, StatusBadge, Modal } from '../components/ui';
+import { NewRecipeForm } from '../components/NewRecipeForm';
+import { Recipe } from '../types';
+import { useToast } from '../contexts';
 
 const Dashboard: React.FC = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { success } = useToast();
   const recentRecipes = useMemo(() => MOCK_RECIPES.slice(0, 5), []);
 
   const stats = useMemo(() => ({
@@ -13,6 +18,13 @@ const Dashboard: React.FC = () => {
     newRecipes: 5,
     activeClients: 245,
   }), []);
+
+  const handleCreateRecipe = (recipe: Recipe) => {
+    console.log('Nova receita criada:', recipe);
+    // Aqui você adicionaria a receita ao estado global ou enviaria para a API
+    setIsModalOpen(false);
+    success(`Receita ${recipe.id} criada com sucesso!`);
+  };
 
   return (
     <div className="flex flex-col gap-8 p-6 lg:p-10">
@@ -106,6 +118,19 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Modal de Nova Receita */}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="Nova Receita"
+        size="xl"
+      >
+        <NewRecipeForm
+          onSubmit={handleCreateRecipe}
+          onCancel={() => setIsModalOpen(false)}
+        />
+      </Modal>
     </div>
   );
 };
